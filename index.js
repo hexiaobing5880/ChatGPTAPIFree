@@ -16,14 +16,15 @@ app.all(`*`, async (req, res) => {
   const token = req.headers.Authorization?.split(' ')[1];
   if( !token ) return res.status(403).send('Forbidden');
 
-  const openai_key = token.split(':')[0];
-  if( !openai_key ) return res.status(403).send('Forbidden');
+  const openai_key = token;
+  // const openai_key = token.split(':')[0];
+  // if( !openai_key ) return res.status(403).send('Forbidden');
 
-  const proxy_key = token.split(':')[1]||"";  
-  if( process.env.PROXY_KEY && proxy_key !== process.env.PROXY_KEY ) 
-    return res.status(403).send('Forbidden');
-
-    //console.log( req );
+  // const proxy_key = token.split(':')[1]||"";  
+  // if( process.env.PROXY_KEY && proxy_key !== process.env.PROXY_KEY ) 
+  //   return res.status(403).send('Forbidden');
+  console.log(openai_key);
+  console.log( req );
 
   
   const options = {
