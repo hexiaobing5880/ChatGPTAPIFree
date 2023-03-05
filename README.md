@@ -1,88 +1,56 @@
-# ChatGPT API Free
+# openai-api-proxy
 
-Welcome to the ChatGPT API Free project, a simple and open-source proxy API that allows you to access OpenAI's ChatGPT API for free.
+Simple proxy for OpenAi api via a one-line docker command
 
-## News
+[简体中文](README.CN.md)
 
-**2023-03-04**: Check out the [ChatGPT Free App](https://freechatgpt.chat/), an amazing open-source web application that allows you to interact with OpenAI's ChatGPT API for free. It is built on top of this project.
+以下英文由GPT翻译。The following English was translated by GPT.
 
-## Usage
+## NodeJS Deployment
 
-To use ChatGPT API Free, simply send a POST request to the following endpoint:
+You can deploy ./app.js to any environment that supports nodejs 14+, such as cloud functions and edge computing platforms.
+
+1. Copy app.js and package.json to the directory
+2. Run yarn install to install dependencies
+3. Run node app.js to start the service.
+
+## Docker Deployment
 
 ```
-https://chatgpt-api.shn.hk/v1/
+docker run -p 9000:9000 easychen/ai.level06.com:latest
 ```
 
-For instance, to generate a response to the prompt "Hello, how are you?" using the `gpt-3.5-turbo` model, send the following `curl` command:
+The proxy address is http://${IP}:9000.
 
-```sh
-curl https://chatgpt-api.shn.hk/v1/ \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "model": "gpt-3.5-turbo",
-  "messages": [{"role": "user", "content": "Hello, how are you?"}]
-}'
+### Available Environment Variables
+
+1. PORT: Service port.
+2. PROXY_KEY: Proxy access key used to restrict access.
+3. TIMEOUT: Request timeout, default is 5 seconds.
+
+## Usage of the API
+
+1. Change the request address of OpenAI (https://api.openai.com) to the address of this proxy (without a slash).
+2. If PROXY_KEY is set, add `:<PROXY_KEY>` after the OpenAI key. If not set, no modification is required.
+
+## Explanation
+
+1. Only GET and POST method interfaces are supported, and file-related interfaces are not supported.
+2. ~~SSE is currently not supported, so stream-related options need to be turned off.~~ SSE is OK now.
+
+## Example of Client Usage
+
+Take `https://www.npmjs.com/package/chatgpt` as an example.
+
+```js
+chatApi= new gpt.ChatGPTAPI({
+    apiKey: 'sk.....:<proxy_key here>',
+    apiBaseUrl: "http://localhost:9001", // Pass the proxy address
+});
+
 ```
 
-You can view the full API documentation on the [OpenAI official documentation](https://platform.openai.com/docs/api-reference/chat/create).
+## Acknowledgments
 
-## Introduction
+1. SSE referenced the related code in [chatgpt-api project](https://github.com/transitive-bullshit/chatgpt-api/blob/main/src/fetch-sse.ts).
 
-ChatGPT is a world-renowned conversational AI model developed by OpenAI, known for generating human-like responses to various prompts and queries. With its cutting-edge capabilities, ChatGPT is a valuable asset for chatbots, virtual assistants, and other natural language processing applications.
-
-The ChatGPT API is a powerful tool that allows developers to integrate the ChatGPT model into their own applications. However, to use this API, users need to have an OpenAI API key and pay for usage.
-
-ChatGPT API Free believes that everyone should have access to the latest AI technology without the financial burden of paying for an API key. This open-source proxy API allows you to access the ChatGPT API without a key, promoting accessibility and innovation for all.
-
-## What does ChatGPT API Free do?
-
-This simple proxy API acts as a bridge between you and the OpenAI ChatGPT API. You can send requests to the ChatGPT API Free endpoint using the same format as the original API. This proxy API then forwards the request to the OpenAI API with an API key provided by this project, and the response from the OpenAI API is returned to you.
-
-## Significance
-
-The ChatGPT API Free project is a game-changer for the AI development community. With the proxy API, anyone can access the state-of-the-art ChatGPT model without needing a key. This accessibility fosters creativity, innovation, and collaboration among developers, and could potentially lead to groundbreaking advancements in AI technology.
-
-Moreover, other successful projects such as [ChatGPT Free App](https://freechatgpt.chat/) build on top of this API, showing the vast potential of this project.
-
-## Privacy Statement
-
-This project highly values privacy and is committed to safeguarding the privacy of its users. This project does not collect, record, or store any text entered by users or returned by the OpenAI server in any manner. This project does not provide any information to OpenAI or any third parties about the identity of API callers, including but not limited to IP addresses and user-agent strings. The source code of this project is available for inspection to verify this statement.
-
-However, the OpenAI API does retain data for 30 days in accordance with its [data usage policies](https://platform.openai.com/docs/data-usage-policies).
-
-## Host Your Own Instance
-
-If you'd like to run your own instance of ChatGPT API Free, you can easily do so by following these steps:
-
-### Setup OpenAI
-
-1. Create an OpenAI account (if you don't have one already)
-1. Obtain an OpenAI API Key from [OpenAI API Keys](https://platform.openai.com/account/api-keys)
-
-### Setup Cloudflare
-
-1. Create a Cloudflare account (if you don't have one already)
-1. Create a Cloudflare Worker named "chatgpt-api"
-1. Optionally, you can add custom domains for your Cloudflare worker by following the instructions on [Build a Custom Domain](https://developers.cloudflare.com/workers/platform/triggers/custom-domains/#build-a-custom-domain)
-1. In the KV page of the [Workers dashboard](https://dash.cloudflare.com/?to=/:account/workers/kv/namespaces), create a Workers KV named "chatgpi-api", then record its Workers KV ID for later use
-1. In the Cloudflare Worker, add an environment variable `API_KEYS` using the dashboard, which should be a JSON list of strings that contains at least one OpenAI API Key. For more information on adding environment variables, see [Adding Environment Variables via the Dashboard](https://developers.cloudflare.com/workers/platform/environment-variables/#adding-environment-variables-via-the-dashboard)
-1. In the Cloudflare Worker, add an environment variable `SECRET_KEY` using the dashboard, which should be a long-enough random string
-1. Create a Cloudflare API token by following the instructions on [Create a Cloudflare API token](https://developers.cloudflare.com/workers/wrangler/ci-cd/#create-a-cloudflare-api-token)
-
-### Setup GitHub
-
-1. Create a GitHub account (if you don't have one already)
-1. Fork this repository
-1. Modify `wrangler.toml`, change the `id` in `kv_namespaces` to the Workers KV ID above
-1. In your forked repository, create an encrypted secret named `CF_API_TOKEN`, which should contain your Cloudflare API token. For more information on creating encrypted secrets, see [Creating Encrypted Secrets for a Repository](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository)
-1. Run the Deploy action to deploy your changes to Cloudflare
-1. Wait for the action to complete and you're done! Share your API endpoint with others
-
-## Improve this project
-
-This project is always seeking ways to improve and welcomes feedback and contributions from its users. If you have any suggestions or ideas, please feel free to create an issue or submit a pull request on the GitHub repository.
-
-## Sponsor me!
-
-If you find ChatGPT API Free useful, please consider [sponsoring the author](https://github.com/sponsors/ayaka14732) on GitHub to support ongoing development and maintenance. Your support would help her maintain this project and continue to make AI technology accessible for all. Thank you for your support!
