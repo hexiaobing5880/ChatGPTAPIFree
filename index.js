@@ -29,7 +29,7 @@ app.all(`*`, async (req, res) => {
   
   const options = {
       method: req.method,
-      timeout: process.env.TIMEOUT||5000,
+      timeout: process.env.TIMEOUT||300000,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
         'Authorization': 'Bearer '+ openai_key,
