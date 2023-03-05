@@ -14,8 +14,8 @@ app.all(`*`, async (req, res) => {
   const url = `https://api.openai.com${req.url}`;
   console.log( req.headers );
   // 从 header 中取得 Authorization': 'Bearer 后的 token
-  const token = req.headers.Authorization?.split(' ')[1];
-  // if( !token ) return res.status(403).send('Forbidden');
+  const token = req.headers.authorization?.split(' ')[1];
+  if( !token ) return res.status(403).send('Forbidden');
 
   const openai_key = token;
   // const openai_key = token.split(':')[0];
