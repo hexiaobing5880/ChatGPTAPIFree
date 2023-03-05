@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.all(`*`, async (req, res) => {
   const url = `https://api.openai.com${req.url}`;
-  console.log( req.headers );
+  // console.log( req.headers );
   // 从 header 中取得 Authorization': 'Bearer 后的 token
   const token = req.headers.authorization?.split(' ')[1];
   if( !token ) return res.status(403).send('Forbidden');
@@ -24,7 +24,7 @@ app.all(`*`, async (req, res) => {
   // const proxy_key = token.split(':')[1]||"";  
   // if( process.env.PROXY_KEY && proxy_key !== process.env.PROXY_KEY ) 
   //   return res.status(403).send('Forbidden');
-  console.log(openai_key);
+  // console.log(openai_key);
 
   
   const options = {
@@ -35,7 +35,7 @@ app.all(`*`, async (req, res) => {
         'Authorization': 'Bearer '+ openai_key,
       },
       onMessage: (data) => {
-        // console.log(data);
+        console.log(data);
         res.write("data: "+data+"\n\n" );
         if( data === '[DONE]' )
         {
@@ -45,7 +45,7 @@ app.all(`*`, async (req, res) => {
   };
   
   if( req.method.toLocaleLowerCase() === 'post' && req.body ) options.body = JSON.stringify(req.body);
-  // console.log({url, options});
+  console.log({url, options});
 
   try {
     
@@ -119,7 +119,7 @@ async function* streamAsyncIterable(stream) {
 async function myFetch(url, options) {
   const {timeout, ...fetchOptions} = options;
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeout||5000)
+  const timeoutId = setTimeout(() => controller.abort(), timeout||120000)
   const res = await fetch(url, {...fetchOptions,signal:controller.signal});
   clearTimeout(timeoutId);
   return res;
