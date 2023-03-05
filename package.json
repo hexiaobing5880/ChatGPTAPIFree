@@ -2,10 +2,14 @@
   "name": "chatgpt-api",
   "version": "0.0.0",
   "private": true,
+  "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "dependencies": {
+    "@vercel/node": "^1.15.0",
+    "nodemon": "^2.0.16",
     "body-parser": "^1.20.2",
     "cross-fetch": "^3.1.5",
     "eventsource-parser": "^0.1.0",
