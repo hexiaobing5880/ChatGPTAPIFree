@@ -1,4 +1,5 @@
-import moment from 'moment';
+// import moment from 'moment';
+moment = require('moment');
 
 const UPSTREAM_URL = 'https://api.openai.com/v1/chat/completions';
 const ORG_ID_REGEX = /\borg-[a-zA-Z0-9]{24}\b/g; // used to obfuscate any org IDs in the response text
@@ -98,7 +99,7 @@ const handleRequest = async (request, env) => {
   }
 };
 
-export default {
+module.exports =  {
   async fetch(request, env) {
     const { pathname } = new URL(request.url);
     if (pathname !== '/v1/') {
