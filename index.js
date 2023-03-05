@@ -12,9 +12,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.all(`*`, async (req, res) => {
   const url = `https://api.openai.com${req.url}`;
+  console.log( req.headers );
   // 从 header 中取得 Authorization': 'Bearer 后的 token
   const token = req.headers.Authorization?.split(' ')[1];
-  if( !token ) return res.status(403).send('Forbidden');
+  // if( !token ) return res.status(403).send('Forbidden');
 
   const openai_key = token;
   // const openai_key = token.split(':')[0];
@@ -24,7 +25,6 @@ app.all(`*`, async (req, res) => {
   // if( process.env.PROXY_KEY && proxy_key !== process.env.PROXY_KEY ) 
   //   return res.status(403).send('Forbidden');
   console.log(openai_key);
-  console.log( req );
 
   
   const options = {
